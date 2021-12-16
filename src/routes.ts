@@ -1,10 +1,11 @@
 import Router from '@koa/router';
-import UserController from './controllers/user';
+import ArticleController from './controllers/article';
 
 const router = new Router();
-router.get('/users', UserController.listUsers);
-router.get('/users/:id', UserController.showUserDetail);
-router.put('/users/:id', UserController.updateUser);
-router.delete('/users/:id', UserController.deleteUser);
+router.get('/article', ArticleController.listArticle);
+router.get('/article/:id', ArticleController.getArticle);
+router.post('/article', ArticleController.addArticle);
+router.put('/article/:id', ArticleController.updateArticle);
+router.delete('/article/:id', ArticleController.deleteArticle);
 
 export default router;

@@ -1,4 +1,4 @@
-import Koa from 'koa';
+import Koa, { Context } from 'koa';
 import cors from '@koa/cors';
 import bodyParser from 'koa-bodyparser';
 import router from './routes';
@@ -11,9 +11,7 @@ const app = new Koa();
 app.use(logger());
 app.use(cors());
 app.use(bodyParser());
-
 // 响应用户请求
 app.use(router.routes()).use(router.allowedMethods());
-
 // 运行服务器
 app.listen(3450);
