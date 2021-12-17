@@ -135,7 +135,26 @@ class DB {
       });
     });
   }
-
+  // 查询数量
+  findCount(collectionName, matchJson, options) {
+    let attr = {};
+    if (arguments.length === 2) {
+      attr = {};
+    } else if (arguments.length === 3) {
+      attr = options;
+    } else {
+      console.log('传入参数有误');
+    }
+    return new Promise((resolve, reject) => {
+      this.connect().then((db) => {
+        let result = db
+          .collection(collectionName)
+          .find(matchJson, options)
+          .count();
+        resolve(result);
+      });
+    });
+  }
   //固定写法  用于获取_id值下标
   getObjectID(id) {
     return new ObjectID(id);

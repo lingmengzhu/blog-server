@@ -3,11 +3,16 @@ const DB = require('../config/db');
 
 const listArticle = async (ctx: Context) => {
   // ctx.body = 'listArticle controller';
-  const { page = 1, pageSize = 10 } = ctx.request.query;
-  const data = await DB.find('article', {}, {}, { page, pageSize });
+  const { page = 1, pageSize = 10, keywords } = ctx.request.query;
+  let matchOption: any = {};
+  if (keywords) {
+    matchOption.title = { $regex: keywords };
+  }
+  const data = await DB.find('article', matchOption, {}, { page, pageSize });
+  const total = await DB.findCount('article', matchOption, {});
   let feedback;
   try {
-    feedback = { code: 200, msg: 'success', data };
+    feedback = { code: 200, msg: 'success', data, total };
   } catch (e) {
     console.log(e);
     feedback = { code: 500, msg: 'server error' };
