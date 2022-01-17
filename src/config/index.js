@@ -1,5 +1,5 @@
 let app  = {
-    url : 'mongodb://admin:admin@blog_mongodb_1:27017',
+    url : 'mongodb://admin:admin@42.192.57.35:27017',
     dbName : 'blog'
   }
   module.exports = app
