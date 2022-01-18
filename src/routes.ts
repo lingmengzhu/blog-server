@@ -7,6 +7,7 @@ unprotectedRouter.post('/user/login', UserController.getUser);
 unprotectedRouter.post('/user', UserController.addUser);
 
 const protectedRouter = new Router();
+protectedRouter.get('/allArticle', ArticleController.listAllArticle);
 protectedRouter.get('/article', ArticleController.listArticle);
 protectedRouter.get('/article/:id', ArticleController.getArticle);
 protectedRouter.post('/article', ArticleController.addArticle);
