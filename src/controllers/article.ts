@@ -2,12 +2,13 @@ import { Context } from 'koa';
 const DB = require('../config/db');
 // 查询文章
 const listAllArticle = async (ctx: Context) => {
-  const { page = 1, pageSize = 10, keywords } = ctx.request.query;
+  const { current = 1, pageSize = 10, keywords } = ctx.request.query;
   let matchOption: any = {};
   if (keywords) {
     matchOption.title = { $regex: keywords };
   }
-  const data = await DB.find('article', matchOption, {}, { page, pageSize });
+  console.log("current", current)
+  const data = await DB.find('article', matchOption, {}, { page: current, pageSize });
   const total = await DB.findCount('article', matchOption, {});
   let feedback;
   try {
@@ -56,12 +57,21 @@ const getArticle = async (ctx: Context) => {
 };
 const addArticle = async (ctx: Context) => {
   // ctx.body = `addArticle controller with article = ${JSON.stringify(ctx.request.body)}`;
-  const { title, content } = ctx.request.body;
+  const { title, content, classify, tags } = ctx.request.body;
   const userId = ctx.request.header.userId;
-  const res = await DB.insert('article', { title, content, createTime: Date.now(), userId });
+  const articleId = Math.round(Math.random() * 100000000);
+  const res = await DB.insert('article', {
+    articleId,
+    title,
+    classify,
+    tags: tags.join(','),
+    content,
+    createTime: Date.now(),
+    userId,
+  });
   let feedback;
   try {
-    feedback = { code: 200, msg: `add success ${res.insertedId}` };
+    feedback = { code: 200, msg: `add success ${articleId}` };
   } catch (e) {
     console.log(e);
     feedback = { code: 500, msg: 'server error' };

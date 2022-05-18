@@ -53,7 +53,28 @@ const addUser = async (ctx: Context) => {
   }
   ctx.body = feedback;
 };
+// 查询用户
+const listUser = async (ctx: Context) => {
+  const { current = 1, pageSize = 10, keywords, order } = ctx.request.query;
+  let matchOption: any = {};
+  if (keywords) {
+    matchOption.username = { $regex: keywords };
+  }
+  if (order) {
+  }
+  const data = await DB.find('user', matchOption, {}, { page: current, pageSize });
+  const total = await DB.findCount('user', matchOption, {});
+  let feedback;
+  try {
+    feedback = { code: 200, msg: 'success', data, total };
+  } catch (e) {
+    console.log(e);
+    feedback = { code: 500, msg: 'server error' };
+  }
+  ctx.body = feedback;
+};
 export default {
   getUser,
   addUser,
+  listUser
 };
