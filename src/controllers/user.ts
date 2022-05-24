@@ -23,7 +23,7 @@ const getUser = async (ctx: Context) => {
       } else {
         feedback.code = 500;
         feedback.msg = '密码错误';
-        feedback.data = { id: user._id };
+        feedback.data = {};
       }
     }
   } catch (e) {
@@ -34,22 +34,33 @@ const getUser = async (ctx: Context) => {
 };
 const addUser = async (ctx: Context) => {
   // ctx.body = `addArticle controller with article = ${JSON.stringify(ctx.request.body)}`;
-  const { username, password } = ctx.request.body;
-  const data = await DB.insert('user', {
-    username,
-    password: await argon2.hash(password),
-    createTime: Date.now(),
-  });
-  let feedback;
-  try {
+  const { username, password, email } = ctx.request.body;
+  const existUser = await DB.find('user', { username });
+  let feedback: any = {};
+  if (existUser && existUser.length > 0) {
     feedback = {
-      code: 200,
-      msg: `add success ${data.insertedId}`,
-      data: { id: data.insertedId, token: jwt.sign({ id: data.insertedId }, JWT_SECRET) },
+      code: 500,
+      msg: '用户名已存在',
+      data: {},
     };
-  } catch (e) {
-    console.log(e);
-    feedback = { code: 500, msg: 'server error' };
+  } else {
+    const data = await DB.insert('user', {
+      username,
+      password: await argon2.hash(password),
+      email,
+      createTime: Date.now(),
+    });
+
+    try {
+      feedback = {
+        code: 200,
+        msg: `add success ${data.insertedId}`,
+        data: { id: data.insertedId, token: jwt.sign({ id: data.insertedId }, JWT_SECRET) },
+      };
+    } catch (e) {
+      console.log(e);
+      feedback = { code: 500, msg: 'server error' };
+    }
   }
   ctx.body = feedback;
 };
@@ -76,5 +87,5 @@ const listUser = async (ctx: Context) => {
 export default {
   getUser,
   addUser,
-  listUser
+  listUser,
 };

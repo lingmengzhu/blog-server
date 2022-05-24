@@ -45,7 +45,9 @@ const getArticle = async (ctx: Context) => {
   // ctx.body = `getArticle controller with ID = ${ctx.params.id}`;
   // 获取请求头中的解析出来的用户Id
   const { id } = ctx.params;
-  const data = await DB.find('article', { _id: DB.getObjectID(id) });
+  console.log("id", id)
+  const data = await DB.find('article', { articleId: parseInt(id) });
+  console.log("id", data)
   let feedback;
   try {
     feedback = { code: 200, msg: 'success', data: data[0] };
