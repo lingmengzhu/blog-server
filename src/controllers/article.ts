@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 const DB = require('../config/db');
 // 查询文章
-const listAllArticle = async (ctx: Context) => {
+const listArticle = async (ctx: Context) => {
   const { current = 1, pageSize = 10, keywords } = ctx.request.query;
   let matchOption: any = {};
   if (keywords) {
@@ -20,7 +20,7 @@ const listAllArticle = async (ctx: Context) => {
   ctx.body = feedback;
 };
 // 管理文章
-const listArticle = async (ctx: Context) => {
+const listAuthArticle = async (ctx: Context) => {
   // 获取请求头中的解析出来的用户Id
   const id = ctx.request.header.userId;
   const { page = 1, pageSize = 10, keywords } = ctx.request.query;
@@ -114,8 +114,8 @@ const deleteArticle = async (ctx: Context) => {
   // ctx.body = `deleteArticle controller with ID = ${ctx.params.id}`;
 };
 export default {
-  listAllArticle,
   listArticle,
+  listAuthArticle,
   getArticle,
   addArticle,
   updateArticle,

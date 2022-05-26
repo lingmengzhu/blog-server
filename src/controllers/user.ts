@@ -5,7 +5,7 @@ import { JWT_SECRET } from '../constants';
 const argon2 = require('argon2');
 const DB = require('../config/db');
 
-const getUser = async (ctx: Context) => {
+const loginUser = async (ctx: Context) => {
   const { username, password } = ctx.request.body;
   const data = await DB.find('user', { username });
 
@@ -32,7 +32,7 @@ const getUser = async (ctx: Context) => {
   }
   ctx.body = feedback;
 };
-const addUser = async (ctx: Context) => {
+const registerUser = async (ctx: Context) => {
   // ctx.body = `addArticle controller with article = ${JSON.stringify(ctx.request.body)}`;
   const { username, password, email } = ctx.request.body;
   const existUser = await DB.find('user', { username });
@@ -84,8 +84,36 @@ const listUser = async (ctx: Context) => {
   }
   ctx.body = feedback;
 };
+// 管理文章
+const getUser = async (ctx: Context) => {
+  const { id } = ctx.params;
+  const data = await DB.find('user', { _id: DB.getObjectID(id) });
+
+  let feedback;
+  try {
+    feedback = { code: 200, msg: 'success', data: data[0] };
+  } catch (e) {
+    console.log(e);
+    feedback = { code: 500, msg: 'server error' };
+  }
+  ctx.body = feedback;
+};
+// 管理文章
+const updateUser = async (ctx: Context) => {
+  const { _id, username, password, ...rest } = ctx.request.body;
+  const res = await DB.update('user', { _id: DB.getObjectID(_id) }, { ...rest });
+  let feedback;
+  if (res.matchedCount > 0) {
+    feedback = { code: 200, msg: 'edit success' };
+  } else {
+    feedback = { code: 500, msg: 'server error' };
+  }
+  ctx.body = feedback;
+};
 export default {
-  getUser,
-  addUser,
+  loginUser,
+  registerUser,
   listUser,
+  getUser,
+  updateUser,
 };

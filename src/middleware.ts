@@ -18,3 +18,17 @@ export function decodeToken() {
     await next();
   };
 }
+export function urlWithToken() {
+  return async (ctx: Context, next: () => Promise<void>) => {
+    let isFileUrl = /upload/.test(ctx.request.url);
+    if (isFileUrl) {
+      const { token } = ctx.request.query;
+      console.log("token", token)
+      if (token) {
+        ctx.headers.authorization = 'Bearer ' + token;
+      }
+      console.log("token", ctx.headers.authorization)
+    }
+    await next();
+  };
+}
