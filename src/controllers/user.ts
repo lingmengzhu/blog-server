@@ -19,7 +19,7 @@ const loginUser = async (ctx: Context) => {
     if (data && data.length > 0) {
       const user = data[0];
       if (await argon2.verify(user.password, password)) {
-        feedback.data = { id: user._id, token: jwt.sign({ id: user._id }, JWT_SECRET) };
+        feedback.data = { id: user._id, token: jwt.sign({ id: user._id }, JWT_SECRET), user };
       } else {
         feedback.code = 500;
         feedback.msg = '密码错误';

@@ -7,9 +7,12 @@ const listArticle = async (ctx: Context) => {
   if (keywords) {
     matchOption.title = { $regex: keywords };
   }
-  console.log("current", current)
-  const data = await DB.find('article', matchOption, {}, { page: current, pageSize });
+  let data = await DB.find('article', matchOption, {}, { page: current, pageSize });
   const total = await DB.findCount('article', matchOption, {});
+  for (let [index, item] of data.entries()) {
+    const userList = await DB.find('user', { _id: DB.getObjectID(item.userId) });
+    data[index].user = userList[0]
+  }
   let feedback;
   try {
     feedback = { code: 200, msg: 'success', data, total };
@@ -45,9 +48,20 @@ const getArticle = async (ctx: Context) => {
   // ctx.body = `getArticle controller with ID = ${ctx.params.id}`;
   // 获取请求头中的解析出来的用户Id
   const { id } = ctx.params;
-  console.log("id", id)
+  console.log('id', id);
   const data = await DB.find('article', { articleId: parseInt(id) });
-  console.log("id", data)
+  console.log('id', data);
+  for (let [index, item] of data.entries()) {
+    const userList = await DB.find('user', { _id: DB.getObjectID(item.userId) });
+    data[index].user = userList[0]
+
+    let matchOption: any = {
+      userId: item.userId,
+    };
+    const total = await DB.findCount('article', matchOption, {});
+    data[index].user.articleCount = total
+  }
+
   let feedback;
   try {
     feedback = { code: 200, msg: 'success', data: data[0] };
