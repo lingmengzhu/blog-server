@@ -28,12 +28,14 @@
     "@koa/cors": "^3.0.0",
     "@koa/router": "^10.1.1",
     "argon2": "^0.28.3",
+    "ftp": "^0.3.10",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.11.0",
     "koa-body": "^5.0.0",
     "koa-bodyparser": "^4.3.0",
     "koa-jwt": "^4.0.3",
     "koa-static": "^5.0.0",
+    "moment": "^2.29.3",
     "mongodb": "^4.2.2"
   }
 }

@@ -18,13 +18,8 @@ app.use(
   body({
     multipart: true,
     formidable: {
-      uploadDir: path.join(__dirname, './static/upload'),
       keepExtensions: true,
       maxFileSize: 1024 * 1024 * 50,
-      onFileBegin: (name, file: any) => {
-        let dir = path.join(__dirname, './static/upload', getUploadDirName());
-        checkDirExist(dir);
-      },
     },
   }),
 );
